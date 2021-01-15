@@ -21,6 +21,7 @@ add_pool() {
   fi
 
   local DISK_SIZE=$(echo $1 | jq -r '.osDiskSizeGb')
+  local CURRENT_COUNT=$(echo $1 | jq -r '.count')
   local MAX=$(echo $1 | jq -r '.maxCount')
   local MIN=$(echo $1 | jq -r '.minCount')
   local MODE=$(echo $1 | jq -r '.mode')
@@ -33,7 +34,7 @@ add_pool() {
   fi
 
   echo "Adding Pool: $2 ..."
-  local COMMAND="az aks nodepool add --name $2 --cluster-name ${CLUSTER} -g ${RSG} --mode ${MODE} --node-vm-size ${SKU} --node-osdisk-size ${DISK_SIZE} --enable-cluster-autoscaler ${ENABLE_PIP} --min-count ${MIN} --max-count ${MAX} ${NODE_TAINTS}"
+  local COMMAND="az aks nodepool add --name $2 --cluster-name ${CLUSTER} -g ${RSG} --mode ${MODE} --node-vm-size ${SKU} --node-osdisk-size ${DISK_SIZE} --enable-cluster-autoscaler ${ENABLE_PIP} --min-count ${MIN} --max-count ${MAX} -c ${CURRENT_COUNT} ${NODE_TAINTS}"
   if [ "$EXECUTE" = true ]; then
     RESULT=$($COMMAND)
   else
